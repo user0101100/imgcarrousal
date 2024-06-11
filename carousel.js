@@ -9,6 +9,10 @@ class Carousel {
         this.index = 0;
         this.totalImages = this.images.length;
         this.interval = options.interval || 3000;
+        this.transitionEffect = options.transitionEffect || 'ease-in-out';
+        this.transitionDuration = options.transitionDuration || 0.5;
+        this.autoPlay = options.autoPlay !== false;
+        this.pauseOnHover = options.pauseOnHover !== false;
 
         this.updateCarousel = this.updateCarousel.bind(this);
         this.next = this.next.bind(this);
@@ -17,13 +21,23 @@ class Carousel {
         this.stopAutoSlide = this.stopAutoSlide.bind(this);
         this.startAutoSlide = this.startAutoSlide.bind(this);
 
+        this.carouselImages.style.transition = `transform ${this.transitionDuration}s ${this.transitionEffect}`;
+
         this.prevButton.addEventListener('click', this.prev);
         this.nextButton.addEventListener('click', this.next);
+
+        if (this.pauseOnHover) {
+            this.container.addEventListener('mouseenter', this.stopAutoSlide);
+            this.container.addEventListener('mouseleave', this.startAutoSlide);
+        }
+
         this.carouselImages.addEventListener('touchstart', this.touchStart.bind(this));
         this.carouselImages.addEventListener('touchmove', this.touchMove.bind(this));
         this.carouselImages.addEventListener('touchend', this.touchEnd.bind(this));
 
-        this.startAutoSlide();
+        if (this.autoPlay) {
+            this.startAutoSlide();
+        }
         this.createIndicators();
     }
 
@@ -89,7 +103,9 @@ class Carousel {
         } else if (this.moveX < -50) {
             this.next();
         }
-        this.startAutoSlide();
+        if (this.autoPlay) {
+            this.startAutoSlide();
+        }
     }
 }
 
