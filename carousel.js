@@ -91,17 +91,21 @@ class Carousel {
     touchStart(e) {
         this.stopAutoSlide();
         this.startX = e.touches[0].clientX;
+        this.startY = e.touches[0].clientY;
     }
 
     touchMove(e) {
         this.moveX = e.touches[0].clientX - this.startX;
+        this.moveY = e.touches[0].clientY - this.startY;
     }
 
     touchEnd() {
-        if (this.moveX > 50) {
-            this.prev();
-        } else if (this.moveX < -50) {
-            this.next();
+        if (Math.abs(this.moveX) > Math.abs(this.moveY)) {
+            if (this.moveX > 50) {
+                this.prev();
+            } else if (this.moveX < -50) {
+                this.next();
+            }
         }
         if (this.autoPlay) {
             this.startAutoSlide();
